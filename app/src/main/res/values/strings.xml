@@ -1,0 +1,11 @@
+<resources>
+    <string name="appName">SafetyNetSample</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="settings">Settings</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="useSafetyNetWrapperLibrary">Use Safety Net Wrapper Library</string>
+
+    <string name="useSafetyNetWrapperKey" translatable="false">USE_SAFETY_NET_WRAPPER_KEY</string>
+</resources>
