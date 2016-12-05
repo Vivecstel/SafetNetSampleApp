@@ -1,0 +1,59 @@
+ext.versions = [
+        //
+        minSdk                      : 19,
+        targetSdk                   : 25,
+        compileSdk                  : 25,
+        buildTools                  : '25.0.0',
+        versionCode                 : 1,
+        versionName                 : '1',
+        applicationId               : 'com.safety.net.sample',
+        // gradle
+        androidGradlePlugin         : '2.2.2',
+        androidAptGradlePlugin      : '1.8',
+        // libraries
+        espresso                    : '2.2.2',
+        junit                       : '4.12',
+        supportLibs                 : '25.0.1',
+        playServices                : '10.0.1',
+        gson                        : '2.7',
+        priorityJobQueue            : '2.0.1',
+        icepick                     : '3.2.0',
+        eventBus                    : '3.0.0',
+        eventBusProcessor           : '3.0.1',
+        okhttp                      : '3.5.0',
+        butterknife                 : '8.4.0',
+        fragmentargs                : '3.0.2',
+        safetynethelper             : '0.2.0'
+]
+
+ext.gradlePlugins = [
+        android                     : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+        androidApt                  : "com.neenbedankt.gradle.plugins:android-apt:$versions.androidAptGradlePlugin"
+]
+
+ext.dependeciesUrls = [
+        clojars                     : 'https://clojars.org/repo/',
+        jitpack                     : 'https://jitpack.io'
+]
+
+ext.libraries = [
+        espresso                    : "com.android.support.test.espresso:espresso-core:$versions.espresso",
+        junit                       : "junit:junit:$versions.junit",
+        supportAppCompat            : "com.android.support:appcompat-v7:$versions.supportLibs",
+        supportDesign               : "com.android.support:design:$versions.supportLibs",
+        playServicesSafetNet        : "com.google.android.gms:play-services-safetynet:$versions.playServices",
+        gson                        : "com.google.code.gson:gson:$versions.gson",
+        priorityJobQueue            : "com.birbit:android-priority-jobqueue:$versions.priorityJobQueue",
+        icepick                     : "frankiesardo:icepick:$versions.icepick",
+        icepickProcessor            : "frankiesardo:icepick-processor:$versions.icepick",
+        eventBus                    : "org.greenrobot:eventbus:$versions.eventBus",
+        eventBusProcessor           : "org.greenrobot:eventbus-annotation-processor:$versions.eventBusProcessor",
+        okhttp                      : "com.squareup.okhttp3:okhttp:$versions.okhttp",
+        butterknife                 : "com.jakewharton:butterknife:$versions.butterknife",
+        butterknifeCompiler         : "com.jakewharton:butterknife-compiler:$versions.butterknife",
+        fragmentargs                : "com.hannesdorfmann.fragmentargs:annotation:$versions.fragmentargs",
+        fragmentargsProcessor       : "com.hannesdorfmann.fragmentargs:processor:$versions.fragmentargs",
+        safetynethelper             : "com.github.scottyab:safetynethelper:$versions.safetynethelper"
+]
+
+ext.eventBusIndex = 'com.safety.net.sample.EventBusIndex'

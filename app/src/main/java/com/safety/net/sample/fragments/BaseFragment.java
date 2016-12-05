@@ -2,6 +2,8 @@ package com.safety.net.sample.fragments;
 
 import com.hannesdorfmann.fragmentargs.FragmentArgs;
 
+import org.greenrobot.eventbus.EventBus;
+
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -44,6 +46,20 @@ public abstract class BaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldRegisterToBus()) EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (shouldRegisterToBus()) EventBus.getDefault().unregister(this);
+    }
+
+    public abstract boolean shouldRegisterToBus();
 
     @Override public void onDestroyView() {
         super.onDestroyView();

@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
     defaultConfig {
-        applicationId "com.safety.net.sample"
-        minSdkVersion 19
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        applicationId versions.applicationId
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.versionCode
+        versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,29 +34,29 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(libraries.espresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
-    compile 'com.google.android.gms:play-services-safetynet:10.0.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.birbit:android-priority-jobqueue:2.0.1'
-    compile 'frankiesardo:icepick:3.2.0'
-    provided 'frankiesardo:icepick-processor:3.2.0'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
-    apt 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
-    compile 'com.github.scottyab:safetynethelper:0.2.0'
+    testCompile libraries.junit
+    compile libraries.supportAppCompat
+    compile libraries.supportDesign
+    compile libraries.playServicesSafetNet
+    compile libraries.gson
+    compile libraries.priorityJobQueue
+    compile libraries.icepick
+    provided libraries.icepickProcessor
+    compile libraries.eventBus
+    apt libraries.eventBusProcessor
+    compile libraries.okhttp
+    compile libraries.butterknife
+    apt libraries.butterknifeCompiler
+    compile libraries.fragmentargs
+    apt libraries.fragmentargsProcessor
+    compile libraries.safetynethelper
 }
 
 apt {
     arguments {
-        eventBusIndex "com.steleot.seriez.EventBusIndex"
+        eventBusIndex eventBusIndex
     }
 }

@@ -4,6 +4,7 @@
     package="com.safety.net.sample">
 
     <application
+        android:name=".application.SafetyNetSampleApplication"
         android:allowBackup="true"
         android:label="@string/appName"
         android:icon="@mipmap/ic_launcher"

@@ -2,17 +2,27 @@ package com.safety.net.sample.events;
 
 public class SafetyNetJobResultEvent {
 
-    private String errorMessage;
+    private Boolean ctsProfileMatch;
+    private String message;
 
-    public SafetyNetJobResultEvent(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public SafetyNetJobResultEvent(Boolean ctsProfileMatch, String message) {
+        this.ctsProfileMatch = ctsProfileMatch;
+        this.message = message;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public Boolean getCtsProfileMatch() {
+        return ctsProfileMatch;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setCtsProfileMatch(Boolean ctsProfileMatch) {
+        this.ctsProfileMatch = ctsProfileMatch;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
