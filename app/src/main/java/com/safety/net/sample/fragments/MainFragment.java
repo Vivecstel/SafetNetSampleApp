@@ -6,19 +6,22 @@ import com.safety.net.sample.R;
 import com.safety.net.sample.application.SafetyNetSampleApplication;
 import com.safety.net.sample.events.SafetyNetJobResultEvent;
 import com.safety.net.sample.jobs.SafetyNetJob;
+import com.safety.net.sample.model.ResultModel;
 import com.safety.net.sample.utils.PreferenceUtils;
 import com.scottyab.safetynet.SafetyNetHelper;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,7 +47,8 @@ public class MainFragment extends BaseFragment {
     private MainFragmentListener mListener;
 
     public interface MainFragmentListener {
-        void goToResult(String username, Boolean ctsProfileMatch, String message);
+        void goToSettings();
+        void goToResult(ResultModel resultModel);
     }
 
     @Override
@@ -72,7 +76,9 @@ public class MainFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         setRetainInstance(true);
-        initProgressDialog(String username, );
+        setHasOptionsMenu(true);
+
+        initProgressDialog();
     }
 
     private void initProgressDialog() {
@@ -87,6 +93,23 @@ public class MainFragment extends BaseFragment {
     @Override
     public boolean shouldRegisterToBus() {
         return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settingsItem :
+                mListener.goToSettings();
+                return true;
+            default :
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -141,17 +164,21 @@ public class MainFragment extends BaseFragment {
             @Override
             public void error(int errorCode, String msg) {
                 Log.e(TAG, msg);
-                loading = false;
-                dismissProgressDialog();
+                goToResult(null, msg);
             }
 
             @Override
             public void success(boolean ctsProfileMatch) {
-                Log.d(TAG, "ctsProfileMatch : " + ctsProfileMatch);
-                loading = false;
-                dismissProgressDialog();
+                goToResult(ctsProfileMatch, "");
             }
         });
+    }
+
+    private void goToResult(Boolean ctsProfileMatch, String message) {
+        loading = false;
+        dismissProgressDialog();
+        mListener.goToResult(new ResultModel(username.getText().toString(),
+                ctsProfileMatch, message));
     }
 
     private void runWithJob() {
@@ -162,6 +189,6 @@ public class MainFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleSafetyNetJobResultEvent(SafetyNetJobResultEvent event) {
         Log.d(TAG, "SafetyNetJobResultEvent received");
-        dismissProgressDialog();
+        goToResult(event.getCtsProfileMatch(), event.getMessage());
     }
 }

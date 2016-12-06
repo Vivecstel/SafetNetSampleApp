@@ -9,6 +9,7 @@
     <string name="usernameEmpty">Username field is empty</string>
     <string name="passwordEmpty">Password field is empty</string>
     <string name="useSafetyNetWrapperLibrary">Use Safety Net Wrapper Library</string>
+    <string name="welcome">Welcome %1$s</string>
 
     <string name="useSafetyNetWrapperKey" translatable="false">USE_SAFETY_NET_WRAPPER_KEY</string>
 </resources>

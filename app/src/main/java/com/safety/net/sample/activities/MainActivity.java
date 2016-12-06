@@ -2,6 +2,9 @@ package com.safety.net.sample.activities;
 
 import com.safety.net.sample.R;
 import com.safety.net.sample.fragments.MainFragment;
+import com.safety.net.sample.fragments.ResultFragment;
+import com.safety.net.sample.fragments.ResultFragmentBuilder;
+import com.safety.net.sample.model.ResultModel;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,12 +14,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainFragment.MainFragmentListener {
 
     // main fragment
     private Fragment mMainFragment;
-    // main fragment tag
+    // fragment tags
     private String MAIN_FRAGMENT_TAG = "MAIN_FRAGMENT_TAG";
+    private String RESULT_FRAGMENT_TAG = "RESULT_FRAGMENT_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +42,20 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        final MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.activity_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settingsItem :
-                startActivity(SettingsActivity.getStartingIntent(MainActivity.this));
-                return true;
-            default :
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     protected boolean shouldRegisterToBus() {
         return false;
+    }
+
+    @Override
+    public void goToSettings() {
+        startActivity(SettingsActivity.getStartingIntent(MainActivity.this));
+    }
+
+    @Override
+    public void goToResult(ResultModel resultModel) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.contentLinearLayout,
+                ResultFragmentBuilder.newResultFragment(resultModel), RESULT_FRAGMENT_TAG);
+        fragmentTransaction.commit();
     }
 }

@@ -71,11 +71,13 @@ public class SafetyNetJobHelper {
                         Status status = attestationResult.getStatus();
                         String jwsResult = attestationResult.getJwsResult();
 
-                        if (status.isSuccess() && !TextUtils.isEmpty(jwsResult)) {
+                        if (!status.isSuccess()) {
+                            mCallback.error("SafetyNetApi attestationResult status : " + status.getStatusMessage());
+                        } else if (!TextUtils.isEmpty(jwsResult)) {
+                            mCallback.error("SafetyNetApi jwsResult is empty");
+                        } else {
                             final SafetyNetResponse safetyNetResponse = parseJwsResult(jwsResult);
                             mCallback.error(safetyNetResponse.toString());
-                        } else {
-                            mCallback.error("SafetyNetApi.AttestationResult success == false or empty payload");
                         }
                     }
                 });
