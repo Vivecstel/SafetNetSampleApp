@@ -1,36 +1,58 @@
 package com.safety.net.sample.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class SafetyNetResponse {
 
+    @Expose
     @SerializedName("nonce")
     private String nonce;
 
+    @Expose
     @SerializedName("timestampMs")
-    private Integer timestampMs;
+    private Long timestampMs;
 
+    @Expose
     @SerializedName("apkPackageName")
     private String apkPackageName;
 
+    @Expose
     @SerializedName("apkDigestSha256")
     private String apkDigestSha256;
 
+    @Expose
     @SerializedName("ctsProfileMatch")
     private Boolean ctsProfileMatch;
 
+    @Expose
     @SerializedName("extension")
     private String extension;
 
+    @Expose
     @SerializedName("apkCertificateDigestSha256")
     private List<String> apkCertificateDigestSha256 = null;
 
+    @Expose
     @SerializedName("basicIntegrity")
     private Boolean basicIntegrity;
 
     public SafetyNetResponse() {
+    }
+
+    public SafetyNetResponse(String nonce, Long timestampMs, String apkPackageName,
+                             String apkDigestSha256, Boolean ctsProfileMatch, String extension,
+                             List<String> apkCertificateDigestSha256, Boolean basicIntegrity) {
+        this.nonce = nonce;
+        this.timestampMs = timestampMs;
+        this.apkPackageName = apkPackageName;
+        this.apkDigestSha256 = apkDigestSha256;
+        this.ctsProfileMatch = ctsProfileMatch;
+        this.extension = extension;
+        this.apkCertificateDigestSha256 = apkCertificateDigestSha256;
+        this.basicIntegrity = basicIntegrity;
     }
 
     public String getNonce() {
@@ -41,11 +63,11 @@ public class SafetyNetResponse {
         this.nonce = nonce;
     }
 
-    public Integer getTimestampMs() {
+    public Long getTimestampMs() {
         return timestampMs;
     }
 
-    public void setTimestampMs(Integer timestampMs) {
+    public void setTimestampMs(Long timestampMs) {
         this.timestampMs = timestampMs;
     }
 

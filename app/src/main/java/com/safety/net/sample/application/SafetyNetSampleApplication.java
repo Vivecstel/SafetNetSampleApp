@@ -59,7 +59,7 @@ public class SafetyNetSampleApplication extends Application {
 
     private void configureGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
-                .disableHtmlEscaping();
+                .excludeFieldsWithoutExposeAnnotation();
 
         gson = gsonBuilder.create();
     }

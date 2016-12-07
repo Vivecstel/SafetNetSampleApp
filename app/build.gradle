@@ -43,8 +43,6 @@ dependencies {
     compile libraries.playServicesSafetNet
     compile libraries.gson
     compile libraries.priorityJobQueue
-    compile libraries.icepick
-    provided libraries.icepickProcessor
     compile libraries.eventBus
     apt libraries.eventBusProcessor
     compile libraries.okhttp

@@ -43,6 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/verticalMargin"
         android:text="@string/login"
-        android:background="?attr/colorAccent" />
+        android:background="@drawable/login_button_drawable" />
 
 </LinearLayout>

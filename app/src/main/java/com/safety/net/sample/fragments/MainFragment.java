@@ -23,13 +23,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import icepick.State;
 
 public class MainFragment extends BaseFragment {
 
@@ -38,11 +36,10 @@ public class MainFragment extends BaseFragment {
     // Views
     @BindView(R.id.username) EditText username;
     @BindView(R.id.password) EditText password;
-    @BindView(R.id.loginButton) Button loginButton;
     // Progress dialog
     private ProgressDialog mProgressDialog;
     // loading
-    @State boolean loading = false;
+    boolean loading = false;
     // listener
     private MainFragmentListener mListener;
 
@@ -125,12 +122,8 @@ public class MainFragment extends BaseFragment {
     }
 
     @OnClick(R.id.loginButton) void login() {
-        if (!TextUtils.isEmpty(BuildConfig.SAFETY_NET_API_KEY)) {
-            if (validations()) {
-                runSafetyNetApi();
-            }
-        } else {
-            Toast.makeText(getActivity(), R.string.safetyNetApiKeyEmpty, Toast.LENGTH_LONG).show();
+        if (validations()) {
+            runSafetyNetApi();
         }
     }
 

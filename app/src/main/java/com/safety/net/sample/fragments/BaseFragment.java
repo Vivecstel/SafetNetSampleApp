@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import icepick.Icepick;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -33,13 +32,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Icepick.restoreInstanceState(this, savedInstanceState);
         return getLayoutRes() == 0 ? null : inflater.inflate(getLayoutRes(), container, false);
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

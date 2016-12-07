@@ -2,7 +2,9 @@
 <resources>
     <dimen name="horizontalMargin">16dp</dimen>
     <dimen name="verticalMargin">12dp</dimen>
-    <dimen name="ctsProfileMatchSize">102dp</dimen>
+    <dimen name="loginButtonPadding">4dp</dimen>
+    <dimen name="loginButtonRadius">4dp</dimen>
+    <dimen name="ctsProfileMatchSize">100dp</dimen>
     <dimen name="ctsProfileMatchMargin">20dp</dimen>
     <dimen name="resultTextMargin">12dp</dimen>
     <dimen name="resultTextSize">20sp</dimen>

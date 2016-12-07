@@ -13,11 +13,10 @@ import android.support.v7.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import icepick.Icepick;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    // Butterknife unbinder
+    // Butter knife unbinder
     private Unbinder unbinder;
     // Views
     @Nullable @BindView(R.id.toolbar) Toolbar toolbar;
@@ -27,7 +26,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(getLayoutRes());
         initToolbar();
     }
@@ -61,11 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract boolean shouldRegisterToBus();
-
-    @Override protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
 
     @Override
     protected void onStop() {

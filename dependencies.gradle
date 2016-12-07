@@ -8,7 +8,7 @@ ext.versions = [
         versionName                 : '1',
         applicationId               : 'com.safety.net.sample',
         // gradle
-        androidGradlePlugin         : '2.2.2',
+        androidGradlePlugin         : '2.2.3',
         androidAptGradlePlugin      : '1.8',
         // libraries
         espresso                    : '2.2.2',
@@ -17,7 +17,6 @@ ext.versions = [
         playServices                : '10.0.1',
         gson                        : '2.7',
         priorityJobQueue            : '2.0.1',
-        icepick                     : '3.2.0',
         eventBus                    : '3.0.0',
         eventBusProcessor           : '3.0.1',
         okhttp                      : '3.5.0',
@@ -44,8 +43,6 @@ ext.libraries = [
         playServicesSafetNet        : "com.google.android.gms:play-services-safetynet:$versions.playServices",
         gson                        : "com.google.code.gson:gson:$versions.gson",
         priorityJobQueue            : "com.birbit:android-priority-jobqueue:$versions.priorityJobQueue",
-        icepick                     : "frankiesardo:icepick:$versions.icepick",
-        icepickProcessor            : "frankiesardo:icepick-processor:$versions.icepick",
         eventBus                    : "org.greenrobot:eventbus:$versions.eventBus",
         eventBusProcessor           : "org.greenrobot:eventbus-annotation-processor:$versions.eventBusProcessor",
         okhttp                      : "com.squareup.okhttp3:okhttp:$versions.okhttp",

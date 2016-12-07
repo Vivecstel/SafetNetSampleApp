@@ -3,6 +3,7 @@ package com.safety.net.sample.jobs;
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
+import com.safety.net.sample.BuildConfig;
 import com.safety.net.sample.events.SafetyNetJobResultEvent;
 import com.safety.net.sample.utils.SafetyNetJobHelper;
 
@@ -37,15 +38,10 @@ public class SafetyNetJob extends Job {
     @Override
     public void onRun() throws Throwable {
         Log.d(TAG, "onRun");
-        new SafetyNetJobHelper(context, new SafetyNetJobHelper.SafetyNetJobHelperCallback() {
+        new SafetyNetJobHelper(context, BuildConfig.SAFETY_NET_API_KEY, new SafetyNetJobHelper.SafetyNetJobHelperCallback() {
             @Override
-            public void error(String errorMessage) {
-                EventBus.getDefault().post(new SafetyNetJobResultEvent(null, errorMessage));
-            }
-
-            @Override
-            public void success(boolean ctsProfileMatch) {
-                EventBus.getDefault().post(new SafetyNetJobResultEvent(ctsProfileMatch, ""));
+            public void result(Boolean ctsProfileMatch, String message) {
+                EventBus.getDefault().post(new SafetyNetJobResultEvent(ctsProfileMatch, message));
             }
         });
     }

@@ -6,7 +6,9 @@ import android.os.Parcelable;
 public class ResultModel implements Parcelable {
 
     private String username;
+
     private Boolean ctsProfileMatch;
+
     private String message;
 
     public ResultModel() {
