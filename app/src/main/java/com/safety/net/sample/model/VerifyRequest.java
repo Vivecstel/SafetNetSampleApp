@@ -1,7 +1,10 @@
 package com.safety.net.sample.model;
 
+import com.google.gson.annotations.Expose;
+
 public class VerifyRequest {
 
+    @Expose
     private String signedAttestation;
 
     public VerifyRequest() {

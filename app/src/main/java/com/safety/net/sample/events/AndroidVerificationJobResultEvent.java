@@ -1,11 +1,11 @@
 package com.safety.net.sample.events;
 
-public class SafetyNetJobResultEvent {
+public class AndroidVerificationJobResultEvent {
 
     private Boolean ctsProfileMatch;
     private String message;
 
-    public SafetyNetJobResultEvent(Boolean ctsProfileMatch, String message) {
+    public AndroidVerificationJobResultEvent(Boolean ctsProfileMatch, String message) {
         this.ctsProfileMatch = ctsProfileMatch;
         this.message = message;
     }

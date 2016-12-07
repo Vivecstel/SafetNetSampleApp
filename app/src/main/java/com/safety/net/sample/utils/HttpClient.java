@@ -2,7 +2,6 @@ package com.safety.net.sample.utils;
 
 import com.google.gson.Gson;
 
-import com.safety.net.sample.model.SafetyNetResponse;
 import com.safety.net.sample.model.VerifyRequest;
 
 import android.util.Log;
@@ -25,7 +24,8 @@ public class HttpClient {
     // Constants
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
-
+    private static final int TIMEOUT = 15;
+    // gson
     private Gson mGson;
 
     public HttpClient(Gson gson) {
@@ -33,18 +33,22 @@ public class HttpClient {
     }
 
     public <T> T executePostRequest(String url, VerifyRequest verifyRequest,
-                                    SSLSocketFactory socketFactory, Class<T> classOfT) {
-        if (socketFactory == null) {
+                                    SSLSocketFactory sslSocketFactory, Class<T> classOfT) {
+        // Check if ssl socket factory is null. There is no point to run the request
+        if (sslSocketFactory == null) {
             Log.d(TAG, "socketFactory is null");
             return null;
         }
+
+        // Configure the okhhtpclient using builder and add the ssl socket factory
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .sslSocketFactory(socketFactory, Platform.get().trustManager(socketFactory))
+                .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .sslSocketFactory(sslSocketFactory, Platform.get().trustManager(sslSocketFactory))
                 .build();
 
+        // Configure the request
         Request request = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(MediaType.parse(APPLICATION_JSON), mGson.toJson(verifyRequest)))
@@ -52,6 +56,7 @@ public class HttpClient {
                 .build();
 
         try {
+            // Parse the response using gson and the class provided
             Response response = okHttpClient.newCall(request).execute();
             T t = mGson.fromJson(response.body().charStream(), classOfT);
             response.body().close();
