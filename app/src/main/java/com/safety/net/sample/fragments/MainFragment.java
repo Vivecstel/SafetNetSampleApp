@@ -1,13 +1,16 @@
 package com.safety.net.sample.fragments;
 
-import com.birbit.android.jobqueue.JobManager;
+import com.google.android.gms.safetynet.SafetyNetApi;
+
 import com.safety.net.sample.BuildConfig;
 import com.safety.net.sample.R;
 import com.safety.net.sample.application.SafetyNetSampleApplication;
-import com.safety.net.sample.events.SafetyNetJobResultEvent;
-import com.safety.net.sample.jobs.SafetyNetJob;
+import com.safety.net.sample.events.AndroidVerificationJobResultEvent;
+import com.safety.net.sample.jobs.AndroidVerificationJob;
 import com.safety.net.sample.model.ResultModel;
 import com.safety.net.sample.utils.PreferenceUtils;
+import com.safety.net.sample.utils.SafetyNetApiHelper;
+import com.safety.net.sample.utils.Utils;
 import com.scottyab.safetynet.SafetyNetHelper;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -123,6 +126,7 @@ public class MainFragment extends BaseFragment {
 
     @OnClick(R.id.loginButton) void login() {
         if (validations()) {
+            Utils.closeKeyboard(getActivity());
             runSafetyNetApi();
         }
     }
@@ -147,7 +151,7 @@ public class MainFragment extends BaseFragment {
         if (shouldUseWrapper) {
             runWithWrapper();
         } else {
-            runWithJob();
+            runWithoutWrapper();
         }
     }
 
@@ -174,13 +178,25 @@ public class MainFragment extends BaseFragment {
                 ctsProfileMatch, message));
     }
 
-    private void runWithJob() {
-        JobManager jobManager = SafetyNetSampleApplication.getInstance().getJobManager();
-        jobManager.addJobInBackground(new SafetyNetJob(getActivity()));
+    private void runWithoutWrapper() {
+        new SafetyNetApiHelper(getActivity(), new SafetyNetApiHelper.SafetyNetApiHelperCallback() {
+            @Override
+            public void onError(String errorMessage) {
+                goToResult(null, errorMessage);
+            }
+            @Override
+            public void onResult(SafetyNetApi.AttestationResult attestationResult, byte[] requestNonce) {
+                SafetyNetSampleApplication
+                        .getInstance()
+                        .getJobManager()
+                        .addJobInBackground(new AndroidVerificationJob(BuildConfig.SAFETY_NET_API_KEY,
+                                getActivity(), attestationResult, requestNonce));
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleSafetyNetJobResultEvent(SafetyNetJobResultEvent event) {
+    public void handleSafetyNetJobResultEvent(AndroidVerificationJobResultEvent event) {
         Log.d(TAG, "SafetyNetJobResultEvent received");
         goToResult(event.getCtsProfileMatch(), event.getMessage());
     }
