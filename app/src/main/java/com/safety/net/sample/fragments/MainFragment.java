@@ -51,6 +51,10 @@ public class MainFragment extends BaseFragment {
         void goToResult(ResultModel resultModel);
     }
 
+    public static MainFragment newInstance() {
+        return new MainFragment();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -60,10 +64,6 @@ public class MainFragment extends BaseFragment {
             throw new ClassCastException(getContext().toString()
                     + " must implement MainFragmentListener");
         }
-    }
-
-    public static MainFragment newInstance() {
-        return new MainFragment();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class MainFragment extends BaseFragment {
     }
 
     private void runWithWrapper() {
-        final SafetyNetHelper safetyNetHelper = new SafetyNetHelper(BuildConfig.SAFETY_NET_API_KEY);
+        final SafetyNetHelper safetyNetHelper = new SafetyNetHelper(BuildConfig.ANDROID_VERIFICATION_API_KEY);
         safetyNetHelper.requestTest(getActivity(), new SafetyNetHelper.SafetyNetWrapperCallback() {
             @Override
             public void error(int errorCode, String msg) {
@@ -185,12 +185,14 @@ public class MainFragment extends BaseFragment {
                 goToResult(null, errorMessage);
             }
             @Override
-            public void onResult(SafetyNetApi.AttestationResult attestationResult, byte[] requestNonce) {
+            public void onResult(SafetyNetApi.AttestationResult attestationResult, long timestamp,
+                                 byte[] requestNonce) {
                 SafetyNetSampleApplication
                         .getInstance()
                         .getJobManager()
-                        .addJobInBackground(new AndroidVerificationJob(BuildConfig.SAFETY_NET_API_KEY,
-                                getActivity(), attestationResult, requestNonce));
+                        .addJobInBackground(new AndroidVerificationJob(getActivity(),
+                                BuildConfig.ANDROID_VERIFICATION_API_KEY, timestamp,
+                                requestNonce, attestationResult));
             }
         });
     }

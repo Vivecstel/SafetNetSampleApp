@@ -40,7 +40,7 @@ public class HttpClient {
             return null;
         }
 
-        // Configure the okhhtpclient using builder and add the ssl socket factory
+        // Configure the ok http client using builder and add the ssl socket factory
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
@@ -58,10 +58,13 @@ public class HttpClient {
         try {
             // Parse the response using gson and the class provided
             Response response = okHttpClient.newCall(request).execute();
-            T t = mGson.fromJson(response.body().charStream(), classOfT);
-            response.body().close();
+            // If not successful return null
+            if (response.isSuccessful()) {
+                T t = mGson.fromJson(response.body().charStream(), classOfT);
+                response.body().close();
 
-            return t;
+                return t;
+            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

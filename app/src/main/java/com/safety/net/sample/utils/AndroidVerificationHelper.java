@@ -13,7 +13,6 @@ import com.scottyab.safetynet.GoogleApisTrustManager;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -28,23 +27,21 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class AndroidVerificationHelper {
 
-    // Tag
-    private final String TAG = AndroidVerificationHelper.this.getClass().getSimpleName();
     // Verification Url
     private static final String URL = "https://www.googleapis.com/androidcheck/v1/attestations/verify?key=";
+    // validation helper
+    private ValidationHelper mValidationHelper;
     // Device verification api key
     private String mApiKey;
-    // Package name
-    private String mPackageName;
     // Gson
     private Gson mGson;
     // Callback
     private AndroidVerificationHelperCallback mCallback;
 
-    public AndroidVerificationHelper(String apiKey, String packageName,
+    public AndroidVerificationHelper(ValidationHelper validationHelper, String apiKey,
                                      AndroidVerificationHelperCallback callback) {
+        this.mValidationHelper = validationHelper;
         this.mApiKey = apiKey;
-        this.mPackageName = packageName;
         this.mGson = SafetyNetSampleApplication.getInstance().getGson();
         this.mCallback = callback;
     }
@@ -52,7 +49,7 @@ public class AndroidVerificationHelper {
     // validation method of attestationResult
     @SuppressWarnings("ConstantConditions")
     public void validate(@NonNull SafetyNetApi.AttestationResult attestationResult,
-                         @NonNull byte[] requestNonce) {
+                         long timestamp, @NonNull byte[] requestNonce) {
         Status status = attestationResult.getStatus();
         String jwsResult = attestationResult.getJwsResult();
 
@@ -63,7 +60,7 @@ public class AndroidVerificationHelper {
         } else {
             final SafetyNetResponse safetyNetResponse = parseJwsResult(jwsResult);
 
-            if (validateSafetyNetResponse(safetyNetResponse, requestNonce)) {
+            if (mValidationHelper.validateSafetyNetResponse(safetyNetResponse, timestamp, requestNonce)) {
                 if (TextUtils.isEmpty(mApiKey)) {
                     mCallback.onResult(safetyNetResponse.getCtsProfileMatch(), "Android Verification Api Key missing");
                 } else {
@@ -76,7 +73,7 @@ public class AndroidVerificationHelper {
                         if (verifyResponse.getIsValidSignature()) {
                             mCallback.onResult(safetyNetResponse.getCtsProfileMatch(), "");
                         } else {
-                            mCallback.onResult(safetyNetResponse.getCtsProfileMatch(), "\"Android verification response : not valid signature");
+                            mCallback.onResult(safetyNetResponse.getCtsProfileMatch(), "Android verification response : not valid signature");
                         }
                     }
                 }
@@ -98,29 +95,6 @@ public class AndroidVerificationHelper {
             return mGson.fromJson(decodedPayload, SafetyNetResponse.class);
         } else {
             return null;
-        }
-    }
-
-    // validate safety net response
-    private boolean validateSafetyNetResponse(SafetyNetResponse response, byte[] requestNonce) {
-        String requestNonceBase64 = Base64.encodeToString(requestNonce, 0).trim();
-
-        // check if null
-        if (response == null) {
-            Log.d(TAG, "Safety Net response is null");
-            return false;
-        //  compare request nonce with response nonce
-        } else if (!requestNonceBase64.equals(response.getNonce())) {
-            Log.d(TAG, "Request nonce : " + requestNonceBase64 + " doesn't match with response nonce : "
-                    + response.getNonce());
-            return false;
-        //  compare package name with response package name
-        } else if (!mPackageName.equalsIgnoreCase(response.getApkPackageName())) {
-            Log.d(TAG, "Package name : " + mPackageName + " doesn't match with response package name : "
-                    + response.getApkPackageName());
-            return false;
-        } else { // TODO rest validations
-            return true;
         }
     }
 

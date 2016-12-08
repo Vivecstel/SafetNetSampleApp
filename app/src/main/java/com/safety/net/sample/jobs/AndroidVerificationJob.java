@@ -7,6 +7,7 @@ import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.safety.net.sample.events.AndroidVerificationJobResultEvent;
 import com.safety.net.sample.utils.AndroidVerificationHelper;
+import com.safety.net.sample.utils.ValidationHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,25 +22,29 @@ public class AndroidVerificationJob extends Job {
     private final String TAG = AndroidVerificationJob.this.getClass().getSimpleName();
     // Priority
     private static final int PRIORITY = 1;
-    // Exponential back off in ms
+    // Exponential back off
+    private static final int MAX_RETRIES = 5;
     private static final int EXPONENTIAL_BACK_OFF = 1000;
+    // validation helper
+    private ValidationHelper mValidationHelper;
     // api key
     private String mApiKey;
-    // package name
-    private String mPackageName;
-    // Attestation Result
-    private SafetyNetApi.AttestationResult mAttestationResult;
+    // timestamp
+    private long mTimestamp;
     // Request nonce
     private byte[] mRequestNonce;
+    // Attestation Result
+    private SafetyNetApi.AttestationResult mAttestationResult;
 
-    public AndroidVerificationJob(String apiKey, Context context,
-                                  SafetyNetApi.AttestationResult attestationResult, byte[] requestNonce) {
+    public AndroidVerificationJob(Context context, String apiKey, long timestamp, byte[] requestNonce,
+                                  SafetyNetApi.AttestationResult attestationResult) {
         super(new Params(PRIORITY));
 
+        this.mValidationHelper = new ValidationHelper(context);
         this.mApiKey = apiKey;
-        this.mPackageName = context.getPackageName();
-        this.mAttestationResult = attestationResult;
+        this.mTimestamp = timestamp;
         this.mRequestNonce = requestNonce;
+        this.mAttestationResult = attestationResult;
     }
 
     @Override
@@ -50,14 +55,14 @@ public class AndroidVerificationJob extends Job {
     @Override
     public void onRun() throws Throwable {
         Log.d(TAG, "onRun");
-        AndroidVerificationHelper androidVerificationHelper = new AndroidVerificationHelper(mApiKey,
-                mPackageName, new AndroidVerificationHelper.AndroidVerificationHelperCallback() {
+        AndroidVerificationHelper androidVerificationHelper = new AndroidVerificationHelper(
+                mValidationHelper, mApiKey, new AndroidVerificationHelper.AndroidVerificationHelperCallback() {
             @Override
             public void onResult(Boolean ctsProfileMatch, String message) {
                 EventBus.getDefault().post(new AndroidVerificationJobResultEvent(ctsProfileMatch, message));
             }
         });
-        androidVerificationHelper.validate(mAttestationResult, mRequestNonce);
+        androidVerificationHelper.validate(mAttestationResult, mTimestamp, mRequestNonce);
     }
 
     @Override
@@ -65,6 +70,11 @@ public class AndroidVerificationJob extends Job {
         Log.d(TAG, "onCancel");
         final String message = throwable != null ? throwable.getMessage() : "";
         EventBus.getDefault().post(new AndroidVerificationJobResultEvent(null, message));
+    }
+
+    @Override
+    protected int getRetryLimit() {
+        return MAX_RETRIES;
     }
 
     @Override

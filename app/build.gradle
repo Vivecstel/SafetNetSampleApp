@@ -16,18 +16,18 @@ android {
     String safetyNetApiKey = "";
     Properties properties = new Properties()
     properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
-    if (properties.containsKey("SAFETY_NET_API_KEY")) {
-        safetyNetApiKey = properties.getProperty("SAFETY_NET_API_KEY")
+    if (properties.containsKey("ANDROID_VERIFICATION_API_KEY")) {
+        safetyNetApiKey = properties.getProperty("ANDROID_VERIFICATION_API_KEY")
     }
 
     buildTypes {
         release {
-            buildConfigField("String", "SAFETY_NET_API_KEY", "\"" + safetyNetApiKey + "\"")
+            buildConfigField("String", "ANDROID_VERIFICATION_API_KEY", "\"" + safetyNetApiKey + "\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField("String", "SAFETY_NET_API_KEY", "\"" + safetyNetApiKey + "\"")
+            buildConfigField("String", "ANDROID_VERIFICATION_API_KEY", "\"" + safetyNetApiKey + "\"")
         }
     }
 }

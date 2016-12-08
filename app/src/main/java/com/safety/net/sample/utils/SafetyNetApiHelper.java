@@ -56,19 +56,21 @@ public class SafetyNetApiHelper {
 
     // run safety net with callback
     private void runSafetyNet() {
+        final long requestTimestamp = System.currentTimeMillis();
         final byte[] requestNonce = generateRequestNonce();
         SafetyNet.SafetyNetApi
                 .attest(mGoogleApiClient, requestNonce)
                 .setResultCallback(new ResultCallback<SafetyNetApi.AttestationResult>() {
                     @Override
                     public void onResult(@NonNull SafetyNetApi.AttestationResult attestationResult) {
-                        mCallback.onResult(attestationResult, requestNonce);
+                        mCallback.onResult(attestationResult, requestTimestamp, requestNonce);
                     }
                 });
     }
 
     // Obtain a single use token
     // Generate request nonce with minimum 16 bytes in length
+    // this can be generated better from your own server according to google
     private byte[] generateRequestNonce() {
         byte[] nonce = new byte[NONCE_TOKEN_LENGTH];
         mSecureRandom.nextBytes(nonce);
@@ -79,6 +81,7 @@ public class SafetyNetApiHelper {
     // safety net api helper callback
     public interface SafetyNetApiHelperCallback {
         void onError(String errorMessage);
-        void onResult(SafetyNetApi.AttestationResult attestationResult, byte[] requestNonce);
+        void onResult(SafetyNetApi.AttestationResult attestationResult, long timestatmp,
+                      byte[] requestNonce);
     }
 }
