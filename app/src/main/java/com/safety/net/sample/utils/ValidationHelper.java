@@ -80,7 +80,7 @@ public class ValidationHelper {
 
     // get request nonce with Base 64 encode
     private String getRequestNonceBase64(byte[] requestNonce) {
-        return Base64.encodeToString(requestNonce, 0).trim();
+        return Base64.encodeToString(requestNonce, Base64.DEFAULT).trim();
     }
 
     // get the duration of the request

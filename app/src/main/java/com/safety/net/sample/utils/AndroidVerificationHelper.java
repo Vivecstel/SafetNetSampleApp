@@ -85,12 +85,13 @@ public class AndroidVerificationHelper {
 
     // Parse the Jws result to safety net response
     private SafetyNetResponse parseJwsResult(String jwsResult) {
-        // Split the result at .
+        // Header.Payload.Signature jws result parts
+        // Split the result at . to get the parts
         String[] jwtResultParts = jwsResult.split("\\.");
-        // check if the previous array has 3 parts in order to later use the first them
+        // check if the previous array has 3 parts in order to later use the second of them
         if (jwtResultParts.length == 3) {
             // decode the first part with Base64
-            String decodedPayload = new String(Base64.decode(jwtResultParts[1], 0));
+            String decodedPayload = new String(Base64.decode(jwtResultParts[1], Base64.NO_WRAP));
             // parse it with gson
             return mGson.fromJson(decodedPayload, SafetyNetResponse.class);
         } else {
