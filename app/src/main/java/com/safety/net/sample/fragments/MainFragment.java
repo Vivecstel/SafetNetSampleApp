@@ -1,15 +1,14 @@
 package com.safety.net.sample.fragments;
 
-import com.google.android.gms.safetynet.SafetyNetApi;
-
 import com.safety.net.sample.BuildConfig;
 import com.safety.net.sample.R;
 import com.safety.net.sample.application.SafetyNetSampleApplication;
-import com.safety.net.sample.events.AndroidVerificationJobResultEvent;
+import com.safety.net.sample.events.AndroidVerificationEvent;
+import com.safety.net.sample.events.SafetyNetEvent;
 import com.safety.net.sample.jobs.AndroidVerificationJob;
+import com.safety.net.sample.jobs.SafetyNetJob;
 import com.safety.net.sample.model.ResultModel;
 import com.safety.net.sample.utils.PreferenceUtils;
-import com.safety.net.sample.utils.SafetyNetApiHelper;
 import com.safety.net.sample.utils.Utils;
 import com.scottyab.safetynet.SafetyNetHelper;
 
@@ -81,6 +80,7 @@ public class MainFragment extends BaseFragment {
         initProgressDialog();
     }
 
+    // set the progress dialog
     private void initProgressDialog() {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getString(R.string.loading));
@@ -124,6 +124,7 @@ public class MainFragment extends BaseFragment {
         }
     }
 
+    // login button on click listener
     @OnClick(R.id.loginButton) void login() {
         if (validations()) {
             Utils.closeKeyboard(getActivity());
@@ -131,6 +132,7 @@ public class MainFragment extends BaseFragment {
         }
     }
 
+    // validations if username or password are empty
     private boolean validations() {
         if (TextUtils.isEmpty(username.getText())) {
             Toast.makeText(getActivity(), R.string.usernameEmpty, Toast.LENGTH_LONG).show();
@@ -143,6 +145,7 @@ public class MainFragment extends BaseFragment {
         }
     }
 
+    // run safety net api either with wrapper library or not
     private void runSafetyNetApi() {
         loading = true;
         mProgressDialog.show();
@@ -155,6 +158,7 @@ public class MainFragment extends BaseFragment {
         }
     }
 
+    // run with wrapper library
     private void runWithWrapper() {
         final SafetyNetHelper safetyNetHelper = new SafetyNetHelper(BuildConfig.ANDROID_VERIFICATION_API_KEY);
         safetyNetHelper.requestTest(getActivity(), new SafetyNetHelper.SafetyNetWrapperCallback() {
@@ -171,6 +175,7 @@ public class MainFragment extends BaseFragment {
         });
     }
 
+    // go to result after the safety net
     private void goToResult(Boolean ctsProfileMatch, String message) {
         loading = false;
         dismissProgressDialog();
@@ -178,28 +183,30 @@ public class MainFragment extends BaseFragment {
                 ctsProfileMatch, message));
     }
 
+    // run without wrapper library
     private void runWithoutWrapper() {
-        new SafetyNetApiHelper(getActivity(), new SafetyNetApiHelper.SafetyNetApiHelperCallback() {
-            @Override
-            public void onError(String errorMessage) {
-                goToResult(null, errorMessage);
-            }
-            @Override
-            public void onResult(SafetyNetApi.AttestationResult attestationResult, long timestamp,
-                                 byte[] requestNonce) {
-                SafetyNetSampleApplication
-                        .getInstance()
-                        .getJobManager()
-                        .addJobInBackground(new AndroidVerificationJob(getActivity(),
-                                BuildConfig.ANDROID_VERIFICATION_API_KEY, timestamp,
-                                requestNonce, attestationResult));
-            }
-        });
+        SafetyNetSampleApplication
+                .getInstance()
+                .getJobManager()
+                .addJobInBackground(new SafetyNetJob());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleSafetyNetJobResultEvent(AndroidVerificationJobResultEvent event) {
-        Log.d(TAG, "SafetyNetJobResultEvent received");
+    public void handleSafetyNetEvent(SafetyNetEvent event) {
+        Log.d(TAG, "SafetyNetEvent received");
+        SafetyNetSampleApplication
+                .getInstance()
+                .getJobManager()
+                .addJobInBackground(new AndroidVerificationJob(getActivity(),
+                        BuildConfig.ANDROID_VERIFICATION_API_KEY,
+                        event.getJwsResult(),
+                        event.getTimestamp(),
+                        event.getRequestNonce()));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleAndroidVerificationEvent(AndroidVerificationEvent event) {
+        Log.d(TAG, "AndroidVerificationEvent received");
         goToResult(event.getCtsProfileMatch(), event.getMessage());
     }
 }

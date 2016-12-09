@@ -40,6 +40,7 @@ public class SafetyNetSampleApplication extends Application {
         return jobManager;
     }
 
+    // configure the job manager
     private void configureJobManager() {
         Configuration.Builder builder = new Configuration.Builder(this)
                 .minConsumerCount(1) // always keep at least one consumer alive
@@ -57,6 +58,7 @@ public class SafetyNetSampleApplication extends Application {
         return gson;
     }
 
+    // configure the gson
     private void configureGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation();

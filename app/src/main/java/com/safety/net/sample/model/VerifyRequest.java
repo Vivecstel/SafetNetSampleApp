@@ -1,10 +1,12 @@
 package com.safety.net.sample.model;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class VerifyRequest {
 
     @Expose
+    @SerializedName("signedAttestation")
     private String signedAttestation;
 
     public VerifyRequest() {

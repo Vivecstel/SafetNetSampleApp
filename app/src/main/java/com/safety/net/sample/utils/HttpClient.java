@@ -8,14 +8,11 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLSocketFactory;
-
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.internal.platform.Platform;
 
 public class HttpClient {
 
@@ -32,20 +29,12 @@ public class HttpClient {
         this.mGson = gson;
     }
 
-    public <T> T executePostRequest(String url, VerifyRequest verifyRequest,
-                                    SSLSocketFactory sslSocketFactory, Class<T> classOfT) {
-        // Check if ssl socket factory is null. There is no point to run the request
-        if (sslSocketFactory == null) {
-            Log.d(TAG, "socketFactory is null");
-            return null;
-        }
-
+    public <T> T executePostRequest(String url, VerifyRequest verifyRequest, Class<T> classOfT) {
         // Configure the ok http client using builder and add the ssl socket factory
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
-                .sslSocketFactory(sslSocketFactory, Platform.get().trustManager(sslSocketFactory))
                 .build();
 
         // Configure the request
@@ -69,6 +58,7 @@ public class HttpClient {
             Log.e(TAG, e.getMessage());
         }
 
+        // return null if request is not successful or exception occurred
         return null;
     }
 }

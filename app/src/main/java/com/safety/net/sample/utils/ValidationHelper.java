@@ -72,6 +72,11 @@ public class ValidationHelper {
             Log.d(TAG, "The apk digest : " + mApkDigest + " doesn't match with the response apk digest : " +
                     response.getApkDigestSha256());
             return false;
+
+        // check response basic integrity
+        } else if (!response.getBasicIntegrity()) {
+            Log.d(TAG, "The response basic integrity is : " + response.getBasicIntegrity());
+            return false;
         // return true if it passes all validations
         } else {
             return true;
@@ -146,7 +151,7 @@ public class ValidationHelper {
         try {
             DigestInputStream dis = new DigestInputStream(in, md);
             byte[] buffer = new byte[BUFFER_SIZE];
-            while (dis.read(buffer) != -1) { /* empty */}
+            while (dis.read(buffer) != -1) { /* empty */ }
             dis.close();
             return md.digest();
         } finally {
