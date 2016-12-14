@@ -75,12 +75,12 @@ public class SafetyNetApiHelper {
                         // the json web signature
                         String jwsResult = attestationResult.getJwsResult();
 
-                        // Check if status is not success and throw exception to retry
+                        // Check if status is not success
                         if (!status.isSuccess()) {
-                            throw new RuntimeException("SafetyNetApi attestationResult status not success");
-                        // Check if the jws result is empty and throw excpetion to retry
+                            mCallback.onError("SafetyNetApi attestationResult status not success");
+                        // Check if the jws result is empty
                         } else if (TextUtils.isEmpty(jwsResult)) {
-                            throw new RuntimeException("SafetyNetApi jwsResult is empty");
+                            mCallback.onError("SafetyNetApi jwsResult is empty");
                         } else {
                             mCallback.onResult(jwsResult, requestTimestamp, requestNonce);
                         }
